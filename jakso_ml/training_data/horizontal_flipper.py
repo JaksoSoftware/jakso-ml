@@ -2,12 +2,10 @@ import copy
 import cv2 as cv
 from .augmenter import Augmenter
 
-__all__ = ['HorizontalFlipper']
-
 class HorizontalFlipper(Augmenter):
-  """
+  '''
   Augmenter that flips the image horizontally.
-  """
+  '''
   def __init__(self, num = 1, keep_original = True):
     super().__init__(num, keep_original)
 

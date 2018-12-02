@@ -2,13 +2,11 @@ import random, copy
 from .augmenter import Augmenter
 from ..utils import area, intersection, round_tuple
 
-__all__ = ['Translator']
-
 class Translator(Augmenter):
-  """
+  '''
   Augmenter that translates the SampleImages randomly based on
   the min/max_trans_x and min/max_trans_y parameters.
-  """
+  '''
   def __init__(
     self,
     num,

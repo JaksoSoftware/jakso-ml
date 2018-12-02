@@ -1,13 +1,11 @@
 import copy
 from .augmenter import Augmenter
 
-__all__ = ['RoiExtractor']
-
 class RoiExtractor(Augmenter):
-  """
+  '''
   Augmenter that extracts the ROI from the image and returns
   that as a new SampleImage.
-  """
+  '''
   def augment(self, sample):
     _, _, w, h = sample.roi
     sample_copy = copy.copy(sample)

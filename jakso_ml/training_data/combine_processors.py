@@ -1,5 +1,3 @@
-__all__ = ['combine_processors']
-
 def combine_processors(processors):
   def process(samples):
     generated_samples = []

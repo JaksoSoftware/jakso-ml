@@ -2,12 +2,10 @@ import os
 import cv2 as cv
 from .processor import Processor
 
-__all__ = ['FileWriter']
-
 class FileWriter(Processor):
-  """
+  '''
   Writes a sample to a file.
-  """
+  '''
   def __init__(self, folder_path, file_name_creator):
     self.folder_path = folder_path
     self.file_name_creator = file_name_creator

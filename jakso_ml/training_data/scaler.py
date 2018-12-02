@@ -2,13 +2,11 @@ import random, copy
 from .augmenter import Augmenter
 from ..utils import area, intersection, round_tuple
 
-__all__ = ['Scaler']
-
 class Scaler(Augmenter):
-  """
+  '''
   Augmenter that scales the SampleImages randomly based on
   the min_scale and max_scale parameters.
-  """
+  '''
   def __init__(
     self,
     num,

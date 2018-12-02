@@ -4,12 +4,10 @@ import numpy as np
 from scipy import interpolate
 from .augmenter import Augmenter
 
-__all__ = ['WhiteBalancer']
-
 class WhiteBalancer(Augmenter):
-  """
+  '''
   Augmenter that randomly changes the white balance of the SampleImages.
-  """
+  '''
   def __init__(
     self,
     num = 1,

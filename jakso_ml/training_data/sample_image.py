@@ -3,12 +3,10 @@ import cv2 as cv
 import numpy as np
 from ..utils import read_json_from_file, round_tuple
 
-__all__ = ['SampleMetaData', 'SampleImage']
-
 class SampleMetaData(object):
-  """
+  '''
   The metadata saved as a JSON file with each input sample image.
-  """
+  '''
   def __init__(self, file_path, meta_dict):
     self.file_path = file_path
     self.dict = meta_dict
@@ -30,9 +28,9 @@ class SampleMetaData(object):
 class SampleImage(object):
   SampleMetaData = SampleMetaData
 
-  """
+  '''
   A training sample (both input and augmented)
-  """
+  '''
   def __init__(self, file_path, image, meta_data):
     self.file_path = file_path
     self.image = image

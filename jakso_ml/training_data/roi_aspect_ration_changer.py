@@ -2,16 +2,14 @@ import copy
 from .augmenter import Augmenter
 from ..utils import round_tuple
 
-__all__ = ['RoiAspectRatioChanger']
-
 class RoiAspectRatioChanger(Augmenter):
-  """
+  '''
   Augmenter that fixes the aspect ratio of the ROI to the specified
   aspect_ratio (width / height).
 
   If the aspect ratio needs to be changed, it is always done so that
   the ROI gets larger, and not smaller.
-  """
+  '''
   def __init__(self, aspect_ratio = 2 / 1):
     super().__init__()
     self.aspect_ratio = aspect_ratio

@@ -2,12 +2,10 @@ import random, copy
 import cv2 as cv
 from .augmenter import Augmenter
 
-__all__ = ['Blurrer']
-
 class Blurrer(Augmenter):
-  """
+  '''
   Blurs the input image.
-  """
+  '''
   def __init__(
     self,
     num = 1,

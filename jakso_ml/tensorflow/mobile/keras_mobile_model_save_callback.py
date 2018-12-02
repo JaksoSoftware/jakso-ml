@@ -3,13 +3,11 @@ import tensorflow as tf
 from tensorflow import keras
 from .export_keras_model_for_mobile import export_keras_model_for_mobile
 
-__all__ = ['KerasMobileModelSaveCallback']
-
 class KerasMobileModelSaveCallback(keras.callbacks.Callback):
-  """
+  '''
   A keras callback that periodically saves the graph as a .pb file that
   can be used with tensorflow mobile.
-  """
+  '''
   def __init__(self, model, file_dir, file_name, batches_between_saves):
     super().__init__()
 

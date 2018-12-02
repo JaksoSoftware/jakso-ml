@@ -7,17 +7,13 @@ from tensorflow.python.tools import optimize_for_inference_lib
 
 from ..graph_utils import get_node_name_for_input_name, find_sub_graphs, filter_sub_graph, find_sub_graph_inputs, find_sub_graph_outputs
 
-__all__ = ['export_keras_model_for_mobile']
-
 def export_keras_model_for_mobile(model):
-  """
+  '''
   Given a Keras model, applies a bunch of conversions and optimizations for the
   graph to make it work on tensorflow mobile. Returns the exported tensorflow
   GraphDef.
-  """
+  '''
   output_names = [out.op.name for out in model.outputs]
-  input_names = [inp.op.name for inp in model.inputs]
-
   graph = K.get_session().graph
   graph_def = None
 
@@ -39,14 +35,14 @@ def clear_devices(graph_def):
   return graph_def
 
 def freeze_graph(graph_def, output_names = None):
-  """
+  '''
   Freezes the state of a graph into a pruned computation graph.
 
   Creates a new computation graph where variable nodes are replaced by
   constants taking their current value in the session. The new graph will be
   pruned so subgraphs that are not necessary to compute the requested
   outputs are removed.
-  """
+  '''
   freeze_var_names = [v.op.name for v in tf.global_variables()]
   output_names += [v.op.name for v in tf.global_variables()]
 
@@ -58,11 +54,11 @@ def freeze_graph(graph_def, output_names = None):
   )
 
 def fix_batch_normalization(graph_def):
-  """
+  '''
   Keras batch normalization doesn't work on tensorflow mobile by default.
   We need to simplify it by removing all nodes but the ones needed
   for inference.
-  """
+  '''
   batch_norm_graphs = find_sub_graphs(
     graph_def,
     lambda node: node.name.startswith('batch_normalization')
@@ -122,10 +118,10 @@ def fix_batch_normalization(graph_def):
   return graph_def
 
 def remove_dropout(graph_def):
-  """
+  '''
   Remove Keras dropoout operations from the graph as they are only
   needed for training.
-  """
+  '''
   dropout_graphs = find_sub_graphs(
     graph_def,
     lambda node: node.name.startswith('dropout')

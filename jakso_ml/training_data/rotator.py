@@ -2,13 +2,11 @@ import random, copy
 import cv2 as cv
 from .augmenter import Augmenter
 
-__all__ = ['Rotator']
-
 class Rotator(Augmenter):
-  """
+  '''
   Augmenter that rotates the SampleImages randomly based on
   the min_angle and max_angle parameters.
-  """
+  '''
   def __init__(
     self,
     num,

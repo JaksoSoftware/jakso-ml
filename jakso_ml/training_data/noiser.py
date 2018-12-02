@@ -2,8 +2,6 @@ import random, copy
 import numpy as np
 from .augmenter import Augmenter
 
-__all__ = ['Noiser']
-
 class Noiser(Augmenter):
   def __init__(
     self,

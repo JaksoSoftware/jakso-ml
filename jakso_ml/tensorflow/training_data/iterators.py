@@ -12,10 +12,10 @@ def create_image_iterators_for_folder(
   create_input_tensor,
   create_output_tensor
 ):
-  """
+  '''
   Creates a Keras Iterators for reading the training and testing samples from
   a single folder. The test samples are selected randomly.
-  """
+  '''
   files = os.listdir(data_dir)
   random.shuffle(files)
 
