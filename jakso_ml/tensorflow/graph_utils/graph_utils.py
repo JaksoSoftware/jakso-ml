@@ -1,6 +1,6 @@
 def find_sub_graphs(graph_def, filter):
   '''
-  Finds all sub graphs for the name of which `filter` return True.
+  Finds all sub graphs for which `filter` return True.
   '''
   graphs_by_name = {}
 
