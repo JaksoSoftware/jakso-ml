@@ -64,12 +64,14 @@ def fix_batch_normalization(graph_def):
   We need to simplify it by removing all nodes but the ones needed
   for inference.
   '''
+  NODE_NAMES = ['gamma', 'beta', 'moving_mean', 'moving_variance', 'FusedBatchNorm_1']
+  GAMMA, BETA, MEAN, VAR, BATCH_NORM = NODE_NAMES
+
   batch_norm_graphs = find_sub_graphs(
     graph_def,
     lambda node: node.name.startswith('batch_normalization')
   )
 
-  names_of_nodes_to_keep = ['gamma', 'beta', 'moving_mean', 'moving_variance', 'FusedBatchNorm_1']
   nodes_to_remove = []
 
   for _, batch_norm_graph in batch_norm_graphs.items():
@@ -79,7 +81,7 @@ def fix_batch_normalization(graph_def):
       node = graph_def.node[i]
       last_name_part = node.name.split('/')[-1]
 
-      if last_name_part in names_of_nodes_to_keep:
+      if last_name_part in NODE_NAMES:
         nodes[last_name_part] = node
       else:
         nodes_to_remove.append(node)
@@ -87,17 +89,16 @@ def fix_batch_normalization(graph_def):
     inputting_node = find_sub_graph_inputting_node(graph_def, batch_norm_graph)
     output_node = find_sub_graph_output(graph_def, batch_norm_graph)
 
-    fused_batch_norm = nodes['FusedBatchNorm_1']
-    fused_batch_norm.input[0] = inputting_node.name
-    fused_batch_norm.input[1] = nodes['gamma'].name
-    fused_batch_norm.input[2] = nodes['beta'].name
-    fused_batch_norm.input[3] = nodes['moving_mean'].name
-    fused_batch_norm.input[4] = nodes['moving_variance'].name
+    nodes[BATCH_NORM].input[0] = inputting_node.name
+    nodes[BATCH_NORM].input[1] = nodes[GAMMA].name
+    nodes[BATCH_NORM].input[2] = nodes[BETA].name
+    nodes[BATCH_NORM].input[3] = nodes[MEAN].name
+    nodes[BATCH_NORM].input[4] = nodes[VAR].name
 
     graph_def = replace_input(
       graph_def,
       output_node.name,
-      fused_batch_norm.name
+      nodes[BATCH_NORM].name
     )
 
   for node in nodes_to_remove:
