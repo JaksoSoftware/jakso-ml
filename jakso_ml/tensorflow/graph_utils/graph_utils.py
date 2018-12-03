@@ -17,38 +17,11 @@ def find_sub_graphs(graph_def, filter):
 
   return graphs_by_name
 
-def filter_sub_graph(graph_def, sub_graph, filter):
-  new_sub_graph = []
-  all_nodes_by_name = graph_to_dict(graph_def)
-
-  for i in sub_graph:
-    node = graph_def.node[i]
-
-    if filter(node):
-      new_sub_graph.append(i)
-
-    inputs = node.input[:]
-    del node.input[:]
-
-    for input_name in inputs:
-      input_node_name = get_node_name_for_input_name(input_name)
-
-      if input_node_name not in all_nodes_by_name:
-        node.input.append(input_name)
-        continue
-
-      input_node = all_nodes_by_name[input_node_name]
-
-      if filter(input_node):
-        node.input.append(input_name)
-
-  return new_sub_graph
-
 def find_sub_graph_inputs(graph_def, sub_graph):
   '''
-  Find nodes in the sub graph whose each input comes from outside the sub graph.
+  Find nodes in the sub graph that have inputs coming outside the sub graph.
   '''
-  nodes_by_name = sub_graph_to_dict(graph_def, sub_graph)
+  sub_graph_nodes_by_name = sub_graph_to_dict(graph_def, sub_graph)
   all_nodes_by_name = graph_to_dict(graph_def)
   input_nodes = []
 
@@ -63,7 +36,7 @@ def find_sub_graph_inputs(graph_def, sub_graph):
     for input_name in node.input:
       input_node_name = get_node_name_for_input_name(input_name)
 
-      if input_node_name not in nodes_by_name and input_node_name in all_nodes_by_name:
+      if input_node_name not in sub_graph_nodes_by_name and input_node_name in all_nodes_by_name:
         inputs_not_in_sub_graph.append(all_nodes_by_name[input_node_name])
 
     if len(inputs_not_in_sub_graph) > 0:
@@ -73,9 +46,8 @@ def find_sub_graph_inputs(graph_def, sub_graph):
 
 def find_sub_graph_outputs(graph_def, sub_graph):
   '''
-  Find nodes in the sub graph whose each input comes from outside the sub graph.
+  Find nodes in the sub graph that are not inputs of any node in the sub graph.
   '''
-  nodes_by_name = sub_graph_to_dict(graph_def, sub_graph)
   output_nodes = []
 
   for i in sub_graph:

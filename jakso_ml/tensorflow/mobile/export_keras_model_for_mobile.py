@@ -5,7 +5,12 @@ from tensorflow.keras import backend as K
 from tensorflow.graph_util import convert_variables_to_constants, remove_training_nodes
 from tensorflow.python.tools import optimize_for_inference_lib
 
-from ..graph_utils import get_node_name_for_input_name, find_sub_graphs, filter_sub_graph, find_sub_graph_inputs, find_sub_graph_outputs
+from ..graph_utils import (
+  get_node_name_for_input_name,
+  find_sub_graphs,
+  find_sub_graph_inputs,
+  find_sub_graph_outputs
+)
 
 def export_keras_model_for_mobile(model):
   '''
@@ -64,47 +69,30 @@ def fix_batch_normalization(graph_def):
     lambda node: node.name.startswith('batch_normalization')
   )
 
+  names_of_nodes_to_keep = ['gamma', 'beta', 'moving_mean', 'moving_variance', 'FusedBatchNorm_1']
   nodes_to_remove = []
 
-  for graph_name, batch_norm_graph in batch_norm_graphs.items():
-    gamma = None
-    beta = None
-    mean = None
-    variance = None
-    fused_batch_norm = None
+  for _, batch_norm_graph in batch_norm_graphs.items():
+    nodes = {}
 
     for i in batch_norm_graph:
       node = graph_def.node[i]
       last_name_part = node.name.split('/')[-1]
 
-      if last_name_part == 'gamma':
-        gamma = node
-      elif last_name_part == 'beta':
-        beta = node
-      elif last_name_part == 'moving_mean':
-        mean = node
-      elif last_name_part == 'moving_variance':
-        variance = node
-      elif last_name_part == 'FusedBatchNorm_1':
-        fused_batch_norm = node
+      if last_name_part in names_of_nodes_to_keep:
+        nodes[last_name_part] = node
       else:
         nodes_to_remove.append(node)
-
-    # Remove all nodes and edges that mention `keras_learning_phase`.
-    batch_norm_graph = filter_sub_graph(
-      graph_def,
-      batch_norm_graph,
-      lambda node: 'keras_learning_phase' not in node.name
-    )
 
     inputting_node = find_sub_graph_inputting_node(graph_def, batch_norm_graph)
     output_node = find_sub_graph_output(graph_def, batch_norm_graph)
 
+    fused_batch_norm = nodes['FusedBatchNorm_1']
     fused_batch_norm.input[0] = inputting_node.name
-    fused_batch_norm.input[1] = gamma.name
-    fused_batch_norm.input[2] = beta.name
-    fused_batch_norm.input[3] = mean.name
-    fused_batch_norm.input[4] = variance.name
+    fused_batch_norm.input[1] = nodes['gamma'].name
+    fused_batch_norm.input[2] = nodes['beta'].name
+    fused_batch_norm.input[3] = nodes['moving_mean'].name
+    fused_batch_norm.input[4] = nodes['moving_variance'].name
 
     graph_def = replace_input(
       graph_def,
@@ -129,17 +117,11 @@ def remove_dropout(graph_def):
 
   nodes_to_remove = []
 
-  for key, dropout_graph in dropout_graphs.items():
-    # Remove all nodes and edges that mention `keras_learning_phase`.
-    dropout_graph = filter_sub_graph(
-      graph_def,
-      dropout_graph,
-      lambda node: 'keras_learning_phase' not in node.name
-    )
-
+  for _, dropout_graph in dropout_graphs.items():
     inputting_node = find_sub_graph_inputting_node(graph_def, dropout_graph)
     output_node = find_sub_graph_output(graph_def, dropout_graph)
 
+    # Connect the dropout input directly to the dropout output.
     graph_def = replace_input(
       graph_def,
       output_node.name,
@@ -167,9 +149,15 @@ def remove_keras_training_nodes(graph_def):
   return graph_def
 
 def find_sub_graph_inputting_node(graph_def, sub_graph):
-  input_nodes = find_sub_graph_inputs(graph_def, sub_graph)
-  # first result -> list of inputting nodes -> first item
-  return input_nodes[0][1][0]
+  for _, inputting_nodes in find_sub_graph_inputs(graph_def, sub_graph):
+    for inputting_node in inputting_nodes:
+      if not is_keras_learning_phase_node(inputting_node):
+        return inputting_node
+
+  return None
+
+def is_keras_learning_phase_node(node):
+  return 'keras_learning_phase' in node.name
 
 def find_sub_graph_output(graph_def, sub_graph):
   output_nodes = find_sub_graph_outputs(graph_def, sub_graph)
