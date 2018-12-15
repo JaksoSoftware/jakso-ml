@@ -22,8 +22,8 @@ class KerasMobileModelSaveCallback(keras.callbacks.Callback):
 
       tf.train.write_graph(
         graph_def,
-        self.file_dir,
-        self.file_name,
+        self.file_dir() if callable(self.file_dir) else self.file_dir,
+        self.file_name() if callable(self.file_name) else self.file_name,
         as_text = False
       )
 

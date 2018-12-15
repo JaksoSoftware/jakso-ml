@@ -53,5 +53,7 @@ class WhiteBalancer(Augmenter):
   def _create_lut(self, center):
     tck = interpolate.splrep([0, 128, 256], [0, center, 256], k = 2)
     lut = np.rint(interpolate.splev(range(256), tck, der = 0))
+    lut = np.where(lut > 255, 255, lut)
+    lut = np.where(lut < 0, 0, lut)
     lut = np.uint8(lut)
     return lut
