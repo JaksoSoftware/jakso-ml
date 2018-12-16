@@ -9,27 +9,23 @@ class Rotator(Augmenter):
   '''
   def __init__(
     self,
-    num,
-    keep_original = False,
-    min_angle = -3,
-    max_angle = 3,
+    min_angle,
+    max_angle,
+    **kwargs
   ):
-    super().__init__(num, keep_original)
+    super().__init__(**kwargs)
 
     self.min_angle = min_angle
     self.max_angle = max_angle
 
   def augment(self, sample):
-    samples = []
+    im_h, im_w, _  = sample.image.shape
 
-    for i in range(self.num):
-      angle = random.uniform(self.min_angle, self.max_angle)
-      rotation_matrix = cv.getRotationMatrix2D(sample.roi_center, angle, 1)
-      rotated = cv.warpAffine(sample.image, rotation_matrix, (sample.image.shape[1], sample.image.shape[0]))
+    angle = random.uniform(self.min_angle, self.max_angle)
+    rotation_matrix = cv.getRotationMatrix2D(sample.roi_center, angle, 1)
+    rotated = cv.warpAffine(sample.image, rotation_matrix, (im_w, im_h))
 
-      sample_copy = copy.copy(sample)
-      sample_copy.image = rotated
+    sample_copy = copy.copy(sample)
+    sample_copy.image = rotated
 
-      samples.append(sample_copy)
-
-    return samples
+    return sample_copy

@@ -15,12 +15,18 @@ class Augmenter(Processor):
     if random.uniform(0, 1) > self.augment_propability:
       return [sample]
 
-    augmented = self.augment(sample)
+    augmented_samples = []
+
+    for _ in range(self.num):
+      augmented_sample = self.augment(sample)
+
+      if augmented_sample != None:
+        augmented_samples.append(augmented_sample)
 
     if self.keep_original:
-      augmented.append(sample)
+      augmented_samples.append(sample)
 
-    return augmented
+    return augmented_samples
 
   def augment(self, sample):
-    return [sample]
+    return sample

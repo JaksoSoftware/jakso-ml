@@ -10,8 +10,8 @@ class RoiAspectRatioChanger(Augmenter):
   If the aspect ratio needs to be changed, it is always done so that
   the ROI gets larger, and not smaller.
   '''
-  def __init__(self, aspect_ratio = 2 / 1):
-    super().__init__()
+  def __init__(self, aspect_ratio, **kwargs):
+    super().__init__(**kwargs)
     self.aspect_ratio = aspect_ratio
 
   def augment(self, sample):
@@ -30,4 +30,4 @@ class RoiAspectRatioChanger(Augmenter):
     sample_copy = copy.copy(sample)
     sample_copy.roi = round_tuple((new_x, new_y, new_w, new_h))
 
-    return [sample_copy]
+    return sample_copy

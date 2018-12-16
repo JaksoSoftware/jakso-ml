@@ -13,4 +13,4 @@ class RoiExtractor(Augmenter):
     sample_copy.image = sample.roi_image
     sample_copy.roi = (0, 0, w, h)
 
-    return [sample_copy]
+    return sample_copy

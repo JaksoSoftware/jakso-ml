@@ -1,3 +1,5 @@
+import copy
+
 class Processor(object):
   '''
   Shared base class for all processors.
@@ -7,3 +9,11 @@ class Processor(object):
   '''
   def process(self, sample):
     return [sample]
+
+  def copy(self, **kwargs):
+    props = copy.copy(self.__dict__)
+
+    for key in kwargs:
+      props[key] = kwargs[key]
+
+    return self.__class__(**props)

@@ -5,13 +5,12 @@ from .augmenter import Augmenter
 class Noiser(Augmenter):
   def __init__(
     self,
-    num = 1,
-    keep_original = False,
-    gaussian_scale = 1,
-    salt_vs_pepper = 0.2,
-    salt_pepper_amount = 0.004
+    gaussian_scale,
+    salt_vs_pepper,
+    salt_pepper_amount,
+    **kwargs
   ):
-    super().__init__(num, keep_original)
+    super().__init__(**kwargs)
 
     self.gaussian_scale = gaussian_scale
     self.salt_vs_pepper = salt_vs_pepper
@@ -41,4 +40,4 @@ class Noiser(Augmenter):
 
     sample_copy.image = np.uint8(np.clip(image, 0, 255))
 
-    return [sample_copy]
+    return sample_copy

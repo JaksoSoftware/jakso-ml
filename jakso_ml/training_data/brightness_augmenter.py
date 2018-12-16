@@ -5,12 +5,11 @@ from .augmenter import Augmenter
 class BrightnessAugmenter(Augmenter):
   def __init__(
     self,
-    num = 1,
-    keep_original = False,
-    min = 50,
-    max = 255
+    min,
+    max,
+    **kwargs
   ):
-    super().__init__(num, keep_original)
+    super().__init__(**kwargs)
 
     self.min = min
     self.max = max
@@ -29,4 +28,4 @@ class BrightnessAugmenter(Augmenter):
     )
 
     sample_copy.image = sample_copy.image + brightness
-    return [sample_copy]
+    return sample_copy

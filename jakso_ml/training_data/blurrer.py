@@ -8,11 +8,10 @@ class Blurrer(Augmenter):
   '''
   def __init__(
     self,
-    num = 1,
-    keep_original = False,
-    blur_radii = [3]
+    blur_radii,
+    **kwargs
   ):
-    super().__init__(num, keep_original)
+    super().__init__(**kwargs)
     self.blur_radii = blur_radii
 
   def augment(self, sample):
@@ -21,4 +20,4 @@ class Blurrer(Augmenter):
     sample_copy = copy.deepcopy(sample)
     sample_copy.image = cv.GaussianBlur(sample_copy.image, (radius, radius), 0)
 
-    return [sample_copy]
+    return sample_copy

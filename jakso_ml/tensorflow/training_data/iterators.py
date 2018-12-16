@@ -57,7 +57,7 @@ class ImageIterator(keras.preprocessing.image.Iterator):
       n = len(files),
       batch_size = batch_size,
       shuffle = True,
-      seed = 123623
+      seed = None
     )
 
     self.files = files
