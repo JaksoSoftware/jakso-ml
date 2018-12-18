@@ -1,3 +1,4 @@
+import os
 import tensorflow as tf
 
 from tensorflow import keras
@@ -8,22 +9,22 @@ class KerasMobileModelSaveCallback(keras.callbacks.Callback):
   A keras callback that periodically saves the graph as a .pb file that
   can be used with tensorflow mobile.
   '''
-  def __init__(self, model, file_dir, file_name, batches_between_saves):
+  def __init__(self, model, file_path, batches_between_saves):
     super().__init__()
 
     self.model = model
-    self.file_dir = file_dir
-    self.file_name = file_name
+    self.file_path = file_path
     self.batches_between_saves = batches_between_saves
 
   def on_batch_end(self, batch, logs):
     if batch % self.batches_between_saves == 0:
       graph_def = export_keras_model_for_mobile(self.model)
+      file_path = self.file_path() if callable(self.file_path) else self.file_path
 
       tf.train.write_graph(
         graph_def,
-        self.file_dir() if callable(self.file_dir) else self.file_dir,
-        self.file_name() if callable(self.file_name) else self.file_name,
+        os.path.dirname(file_path),
+        os.path.basename(file_path),
         as_text = False
       )
 
