@@ -26,11 +26,11 @@ class SampleMetaData(object):
     return self.dict['value']
 
 class SampleImage(object):
-  SampleMetaData = SampleMetaData
-
   '''
   A training sample (both input and augmented)
   '''
+  SampleMetaData = SampleMetaData
+
   def __init__(self, file_path, image, meta_data):
     self.file_path = file_path
     self.image = image

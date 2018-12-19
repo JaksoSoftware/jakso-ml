@@ -9,18 +9,23 @@ class KerasMobileModelSaveCallback(keras.callbacks.Callback):
   A keras callback that periodically saves the graph as a .pb file that
   can be used with tensorflow mobile.
   '''
-  def __init__(self, model, file_path, batches_between_saves):
+  def __init__(self, model, file_path):
     super().__init__()
 
     self.model = model
     self.file_path = file_path
-    self.batches_between_saves = batches_between_saves
 
-  def on_batch_end(self, batch, logs):
-    if batch % self.batches_between_saves == 0:
-      graph_def = export_keras_model_for_mobile(self.model)
-      file_path = self.file_path() if callable(self.file_path) else self.file_path
+  def on_epoch_end(self, epoch, logs):
+    graph_def = export_keras_model_for_mobile(self.model)
+    val_loss = logs.get('val_loss')
 
+    # `epoch + 1` because `epoch` is zero-based, while the epochs printed to the
+    # console are one-based.
+    file_path = self.file_path(epoch + 1, val_loss) if callable(self.file_path) else self.file_path
+
+    if file_path != None:
+      # file_path == None means that we don't want to save the model this
+      # time around.
       tf.train.write_graph(
         graph_def,
         os.path.dirname(file_path),
@@ -31,6 +36,7 @@ class KerasMobileModelSaveCallback(keras.callbacks.Callback):
       print(
         '\n',
         'graph saved!',
+        'val_loss:', val_loss,
         'input:', graph_def.node[0].name,
         'output:', graph_def.node[-1].name
       )
