@@ -5,7 +5,7 @@ class Augmenter(Processor):
   '''
   Augmenter is a Processor that augments the input SampleImage.
   '''
-  def __init__(self, num = 1, keep_original = False):
+  def __init__(self, num = 1, keep_original = False, augment_propability = 1):
     # num < 1 means a propability that this augmenter creates outputs.
     self.augment_propability = num
     self.num = int(max(num, 1))

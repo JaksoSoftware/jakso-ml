@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
   name = 'jakso-ml',
-  version = '0.1',
+  version = '0.2',
   description = 'Machine learning utilities built by Jakso Software Oy',
   url = 'https://github.com/JaksoSoftware/jakso-ml',
   author = 'Sami Koskimäki',
