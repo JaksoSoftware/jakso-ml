@@ -88,7 +88,7 @@ class ImageFileIterator(keras.preprocessing.image.Iterator):
           self.cache[file_path] = image
           self.cache_size_bytes += image_size
 
-      output = self.parse_output(file_path)
+      output = self.parse_output(file_path, image)
 
       inputs.append(image)
       outputs.append(output)
