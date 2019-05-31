@@ -2,45 +2,7 @@ import os, random
 import cv2 as cv
 from tensorflow import keras
 
-__all__ = ['create_image_iterators_for_folder', 'ImageFileIterator']
-
-def create_image_iterators_for_folder(
-  data_dir,
-  test_portion,
-  batch_size,
-  parse_output,
-  create_input_tensor,
-  create_output_tensor
-):
-  '''
-  Creates Keras Iterators for reading the training and testing samples from
-  a single folder. The test samples are selected randomly.
-  '''
-  files = os.listdir(data_dir)
-  random.shuffle(files)
-  files = [os.path.join(data_dir, file) for file in files]
-
-  num_test = round(test_portion * len(files))
-  test_files = files[0:num_test]
-  train_files = files[num_test:]
-
-  test_iter = ImageFileIterator(
-    file_paths = test_files,
-    batch_size = batch_size,
-    parse_output = parse_output,
-    create_input_tensor = create_input_tensor,
-    create_output_tensor = create_output_tensor
-  )
-
-  train_iter = ImageFileIterator(
-    file_paths = train_files,
-    batch_size = batch_size,
-    parse_output = parse_output,
-    create_input_tensor = create_input_tensor,
-    create_output_tensor = create_output_tensor
-  )
-
-  return train_iter, test_iter
+__all__ = ['ImageFileIterator']
 
 class ImageFileIterator(keras.preprocessing.image.Iterator):
   '''
@@ -53,7 +15,7 @@ class ImageFileIterator(keras.preprocessing.image.Iterator):
     parse_output,
     create_input_tensor,
     create_output_tensor,
-    max_cache_size_megabytes = 4 * 1024
+    max_cache_size_megabytes = 1.5 * 1024
   ):
     super().__init__(
       n = len(file_paths),

@@ -8,7 +8,7 @@ setup(
   author = 'Sami Koskimäki',
   author_email = 'sami@jakso.me',
   license = 'MIT',
-  packages = find_packages(),
+  packages = find_packages(exclude = ['tests']),
   zip_safe = False,
   install_requires = [
     'tensorflow-gpu',
