@@ -360,6 +360,8 @@ def _remove_extension(file_name):
   return '.'.join(file_name.split('.')[0:-1])
 
 def _is_image_file(file_name):
+  file_name = file_name.lower()
+
   return (
     file_name.endswith('.jpg') or
     file_name.endswith('.jpeg') or
