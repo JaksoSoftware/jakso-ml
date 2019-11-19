@@ -120,6 +120,7 @@ class SampleImage(object):
     self.__current_file_path = SampleImagePath(file_path)
     self.__file_path = SampleImagePath(file_path)
 
+    self.__image_data = None
     self.__image = None
     self.__meta_data = None
     self.__roi = None
@@ -148,6 +149,7 @@ class SampleImage(object):
   def __copy__(self):
     copy = self.__class__(self.file_path)
 
+    copy.__image_data = self.__image_data
     copy.__image = self.__image
     copy.__meta_data = self.__meta_data
     copy.__roi = self.__roi
@@ -183,15 +185,26 @@ class SampleImage(object):
       self.meta_data.save()
 
   @property
+  def image_data(self):
+    if self.__image_data is None:
+      # Load the image data lazily.
+      with open(str(self.__current_file_path), 'rb') as file:
+        self.__image_data = file.read()
+
+    return self.__image_data
+
+  @property
   def image(self):
     if self.__image is None:
       # Load the image lazily.
-      self.__image = cv.imread(str(self.__current_file_path))
+      data_buffer = np.frombuffer(self.image_data, np.uint8)
+      self.__image = cv.imdecode(data_buffer, cv.IMREAD_COLOR)
 
     return self.__image
 
   @image.setter
   def image(self, image):
+    self.__image_data = None
     self.__image = image
 
   @property
