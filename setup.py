@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
   name = 'jakso-ml',
-  version = '0.3',
+  version = '0.4',
   description = 'Machine learning utilities built by Jakso Software Oy',
   url = 'https://github.com/JaksoSoftware/jakso-ml',
   author = 'Sami Koskimäki',
@@ -11,8 +11,8 @@ setup(
   packages = find_packages(exclude = ['tests']),
   zip_safe = False,
   install_requires = [
-    'tensorflow-gpu',
-    'opencv-python',
-    'scipy'
+    'tensorflow-gpu==2.0.0',
+    'opencv-python==4.1.2.30',
+    'scipy==1.3.2'
   ]
 )
