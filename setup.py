@@ -11,7 +11,7 @@ setup(
   packages = find_packages(exclude = ['tests']),
   zip_safe = False,
   install_requires = [
-    'tensorflow-gpu==2.0.0',
+    'tensorflow-gpu==2.5.1',
     'opencv-python==4.1.2.30',
     'scipy==1.3.2'
   ]
