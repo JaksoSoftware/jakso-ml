@@ -12,7 +12,7 @@ setup(
   zip_safe = False,
   install_requires = [
     'tensorflow-gpu==2.0.0',
-    'opencv-python==4.1.2.30',
+    'opencv-python==4.2.0.32',
     'scipy==1.3.2'
   ]
 )
